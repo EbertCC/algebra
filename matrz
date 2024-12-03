@@ -1,0 +1,61 @@
+import numpy as np
+
+def encode(message, generator_matrix):
+    """
+    Codifica un mensaje usando una matriz generadora.
+
+    Args:
+        message (list): Vector binario del mensaje (e.g., [1, 1, 0]).
+        generator_matrix (ndarray): Matriz generadora (e.g., [[1, 0, 0, 1, 1, 0], ...]).
+
+    Returns:
+        list: Palabra codificada.
+    """
+    message = np.array(message)
+    generator_matrix = np.array(generator_matrix)
+    return (np.dot(message, generator_matrix) % 2).tolist()
+
+def decode(encoded_message, generator_matrix):
+    """
+    Decodifica un mensaje codificado usando una matriz generadora.
+    (Utiliza búsqueda de coincidencia con todas las palabras codificadas posibles.)
+
+    Args:
+        encoded_message (list): Mensaje codificado (e.g., [1, 0, 0, 1, 1, 0]).
+        generator_matrix (ndarray): Matriz generadora usada para codificación.
+
+    Returns:
+        list: Mensaje original decodificado.
+    """
+    # Generar todas las palabras codificadas posibles
+    k = len(generator_matrix)  # Número de filas en la matriz generadora
+    messages = [list(map(int, f"{i:0{k}b}")) for i in range(2 ** k)]  # Mensajes posibles
+    codewords = [encode(msg, generator_matrix) for msg in messages]  # Palabras codificadas
+
+    # Buscar coincidencia con la palabra codificada
+    if encoded_message in codewords:
+        index = codewords.index(encoded_message)
+        return messages[index]
+    else:
+        raise ValueError("Error no corregible detectado.")
+
+# Ejemplo de uso
+if __name__ == "__main__":
+    # Matriz generadora
+    G = [
+        [1, 0, 0, 1, 1, 0],
+        [0, 1, 0, 0, 1, 1],
+        [0, 0, 1, 1, 0, 1]
+    ]
+
+    # Mensaje original
+    message = [1, 1, 0]
+    print("Mensaje original:", message)
+
+    # Codificar el mensaje
+    encoded_message = encode(message, G)
+    print("Mensaje codificado:", encoded_message)
+
+    # Decodificar el mensaje codificado
+    decoded_message = decode(encoded_message, G)
+    print("Mensaje decodificado:", decoded_message)
