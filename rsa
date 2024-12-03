@@ -1,0 +1,52 @@
+from math import gcd
+
+def mod_inverse(e, phi):
+    for d in range(1, phi):
+        if (e * d) % phi == 1:
+            return d
+    return None
+
+def generate_rsa_keys():
+    p = 17
+    q = 11
+
+    n = p * q
+    phi = (p - 1) * (q - 1)
+
+    e = 7  # Valor fijo coprimo con phi
+    d = mod_inverse(e, phi)
+
+    # Claves pública y privada
+    public_key = (n, e)
+    private_key = (n, d)
+    return public_key, private_key
+
+# Cifrar mensaje
+def encrypt(message, public_key):
+    n, e = public_key
+    encrypted_message = [pow(ord(char), e, n) for char in message]
+    return encrypted_message
+
+# Descifrar mensaje
+def decrypt(encrypted_message, private_key):
+    n, d = private_key
+    decrypted_message = ''.join([chr(pow(char, d, n)) for char in encrypted_message])
+    return decrypted_message
+
+# Programa principal
+if __name__ == "__main__":
+    # Generar claves
+    public_key, private_key = generate_rsa_keys()
+    print("Clave pública (n, e):", public_key)
+    print("Clave privada (n, d):", private_key)
+
+    # Mensaje a cifrar
+    message = input("Ingresa el mensaje a cifrar: ")
+
+    # Cifrar mensaje
+    encrypted_message = encrypt(message, public_key)
+    print("Mensaje cifrado:", encrypted_message)
+
+    # Descifrar mensaje
+    decrypted_message = decrypt(encrypted_message, private_key)
+    print("Mensaje descifrado:", decrypted_message)
