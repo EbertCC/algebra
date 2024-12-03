@@ -1,0 +1,40 @@
+def inverso_modular(a, m=26):
+    for x in range(1, m):
+        if (a * x) % m == 1:
+            return x
+    raise ValueError(f"No existe inverso modular para a={a} con módulo {m}")
+
+def cifrar_afin(mensaje, a, k):
+    abecedario = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    mensaje_cifrado = ""
+    for letra in mensaje.upper():
+        if letra in abecedario:
+            p = abecedario.index(letra)
+            c = (a * p + k) % 26
+            mensaje_cifrado += abecedario[c]
+        else:
+            mensaje_cifrado += letra
+    return mensaje_cifrado
+
+def descifrar_afin(mensaje, a, k):
+    abecedario = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    a_inv = inverso_modular(a)
+    mensaje_descifrado = ""
+    for letra in mensaje.upper():
+        if letra in abecedario:
+            c = abecedario.index(letra)
+            p = (a_inv * (c - k)) % 26
+            mensaje_descifrado += abecedario[p]
+        else:
+            mensaje_descifrado += letra
+    return mensaje_descifrado
+
+mensaje = "HOLA QUE TAL"
+a = 3
+k = 7
+
+mensaje_cifrado = cifrar_afin(mensaje, a, k)
+print("Mensaje cifrado:", mensaje_cifrado)
+
+mensaje_descifrado = descifrar_afin(mensaje_cifrado, a, k)
+print("Mensaje descifrado:", mensaje_descifrado)
