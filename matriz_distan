@@ -1,0 +1,68 @@
+import numpy as np
+
+def encode(message, generator_matrix):
+    """
+    Codifica un mensaje usando una matriz generadora.
+
+    Args:
+        message (list): Vector binario del mensaje (e.g., [1, 1, 0]).
+        generator_matrix (ndarray): Matriz generadora (e.g., [[1, 0, 0, 1, 1, 0], ...]).
+
+    Returns:
+        list: Palabra codificada.
+    """
+    message = np.array(message)
+    generator_matrix = np.array(generator_matrix)
+    return np.dot(message, generator_matrix) % 2
+
+def hamming_distance(x, y):
+    """Calcula la distancia de Hamming entre dos palabras codificadas."""
+    return sum(c1 != c2 for c1, c2 in zip(x, y))
+
+def min_distance(codewords):
+    """
+    Calcula la distancia mínima entre palabras codificadas.
+
+    Args:
+        codewords (list): Lista de palabras codificadas.
+
+    Returns:
+        int: Distancia mínima.
+    """
+    d_min = float('inf')
+    n = len(codewords)
+    for i in range(n):
+        for j in range(i + 1, n):
+            d_min = min(d_min, hamming_distance(codewords[i], codewords[j]))
+    return d_min
+
+# Ejemplo de uso
+if __name__ == "__main__":
+    # Matriz generadora
+    G = [
+        [1, 0, 0, 1, 1, 0],
+        [0, 1, 0, 0, 1, 1],
+        [0, 0, 1, 1, 0, 1]
+    ]
+
+    # Mensajes
+    messages = [
+        [0, 0, 0],
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+        [1, 1, 0],
+        [1, 0, 1],
+        [0, 1, 1],
+        [1, 1, 1]
+    ]
+
+    # Codificar mensajes
+    codewords = [encode(msg, G).tolist() for msg in messages]
+    print("Palabras codificadas:")
+    for msg, codeword in zip(messages, codewords):
+        print(f"{msg} -> {codeword}")
+
+    # Calcular distancia mínima
+    d_min = min_distance(codewords)
+    print("\nDistancia mínima (d_min):", d_min)
