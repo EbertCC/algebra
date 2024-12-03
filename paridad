@@ -1,0 +1,43 @@
+def encode_parity_even(message):
+    """Codifica un mensaje utilizando paridad par."""
+    encoded_message = ""
+    for word in message:
+        # Contar los unos en la palabra
+        ones_count = word.count('1')
+        # Agregar bit de paridad (0 si el número de unos es par, 1 si es impar)
+        parity_bit = '0' if ones_count % 2 == 0 else '1'
+        encoded_message += word + parity_bit
+    return encoded_message
+
+def verify_parity_even(received_message):
+    """Verifica si el mensaje recibido cumple con la paridad par."""
+    words_with_parity = [received_message[i:i+9] for i in range(0, len(received_message), 9)]  # Dividir en palabras de 8 bits + bit de paridad
+    for word in words_with_parity:
+        # Verificar la paridad
+        data_bits = word[:-1]  # Los primeros 8 bits
+        parity_bit = word[-1]  # El último bit
+        ones_count = data_bits.count('1')
+        expected_parity = '0' if ones_count % 2 == 0 else '1'
+        if parity_bit != expected_parity:
+            return False  # Error detectado
+    return True  # No se detectaron errores
+
+
+if __name__ == "__main__":
+    # Mensaje original (lista de palabras de 8 bits)
+    message = ["10110111", "11001010", "11110000"]
+    print("Mensaje original:", message)
+
+    # Codificar con paridad par
+    encoded_message = encode_parity_even(message)
+    print("Mensaje codificado con paridad par:", encoded_message)
+
+    # Verificar el mensaje recibido (simula errores en la transmisión)
+    received_message = "101101110110101011110000"  # Sin errores
+    print("Mensaje recibido (sin errores):", received_message)
+    print("Verificación de paridad (sin errores):", verify_parity_even(received_message))
+
+    # Simular un error en la transmisión
+    received_message_with_error = "101101110110101111110000"  # Error en un bit
+    print("Mensaje recibido (con error):", received_message_with_error)
+    print("Verificación de paridad (con error):", verify_parity_even(received_message_with_error))
