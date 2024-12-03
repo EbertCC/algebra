@@ -1,0 +1,24 @@
+def xor(a, b):
+    return ''.join(str(int(x) ^ int(y)) for x, y in zip(a, b))
+
+def encode(message, key):
+    if len(message) != len(key):
+        raise ValueError("El mensaje y la clave deben tener el mismo tamaño.")
+    return xor(message, key)
+
+def decode(encoded_message, key):
+    if len(encoded_message) != len(key):
+        raise ValueError("El mensaje codificado y la clave deben tener el mismo tamaño.")
+    return xor(encoded_message, key)
+
+if __name__ == "__main__":
+    message = "10110111"
+    key = "11001010"
+
+    encoded_message = encode(message, key)
+    print("Mensaje original:", message)
+    print("Clave:", key)
+    print("Mensaje codificado:", encoded_message)
+
+    decoded_message = decode(encoded_message, key)
+    print("Mensaje decodificado:", decoded_message)
